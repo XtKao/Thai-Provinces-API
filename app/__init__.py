@@ -1,0 +1,1 @@
+"""Thai Provinces API application package."""
