@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "thai-provinces"
+version = "1.0.0"
+description = "Dependency-free Python client for the Thai Provinces API"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+authors = [{ name = "YOUR_NAME" }]
+keywords = ["thailand", "provinces", "zipcode", "api"]
+classifiers = ["Programming Language :: Python :: 3", "License :: OSI Approved :: MIT License"]
+
+[tool.setuptools.packages.find]
+include = ["thai_provinces*"]
