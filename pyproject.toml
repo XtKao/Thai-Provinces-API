@@ -10,6 +10,10 @@ readme = "README.md"
 requires-python = ">=3.11"
 license = { file = "LICENSE" }
 authors = [{ name = "YOUR_NAME" }]
+dependencies = [
+	"fastapi>=0.115,<1.0",
+	"pydantic>=2.7,<3.0",
+]
 keywords = ["thailand", "provinces", "zipcode", "api"]
 classifiers = ["Programming Language :: Python :: 3", "License :: OSI Approved :: MIT License"]
 
