@@ -68,6 +68,8 @@ def normalize(document: object) -> dict[str, list[dict[str, object]]]:
             provinces[province_id]["districts"].append(district)
         elif district_provinces[district_id] != province_id:
             raise ValueError(f"District ID {district_id} belongs to multiple provinces: {district_provinces[district_id]} and {province_id}")
+        elif districts[district_id]["name_th"] != str(required(record, "districtNameTh", "district_name_th")) or districts[district_id]["name_en"] != str(required(record, "districtNameEn", "district_name_en")):
+            raise ValueError(f"Conflicting district data for ID {district_id}")
         subdistrict = {"id": subdistrict_id, "name_th": str(required(record, "subdistrictNameTh", "subdistrict_name_th")), "name_en": str(required(record, "subdistrictNameEn", "subdistrict_name_en")), "zipcode": zipcode}
         districts[district_id]["subdistricts"].append(subdistrict)
     result = {"provinces": sorted(provinces.values(), key=lambda item: item["id"])}

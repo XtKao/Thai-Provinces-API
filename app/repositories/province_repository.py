@@ -4,7 +4,7 @@ from pathlib import Path
 
 from pydantic import RootModel, ValidationError
 
-from app.models import AddressResult, Province
+from app.models import AddressResult, District, Province
 
 
 class ProvinceData(RootModel[list[Province]]):
@@ -37,7 +37,7 @@ class ProvinceRepository:
     def find_province(self, province_id: int) -> Province | None:
         return next((item for item in self._provinces if item.id == province_id), None)
 
-    def find_district(self, district_id: int):
+    def find_district(self, district_id: int) -> tuple[Province, District] | None:
         for province in self._provinces:
             district = next((item for item in province.districts if item.id == district_id), None)
             if district is not None:
