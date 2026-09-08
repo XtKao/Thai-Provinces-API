@@ -29,7 +29,8 @@ class ThaiProvincesAPI:
                 return json.loads(response.read().decode("utf-8"))
         except HTTPError as exc:
             try:
-                detail = json.loads(exc.read().decode("utf-8")).get("detail", str(exc))
+                error_body = json.loads(exc.read().decode("utf-8"))
+                detail = error_body.get("detail", str(exc)) if isinstance(error_body, dict) else str(error_body)
             except (json.JSONDecodeError, UnicodeDecodeError):
                 detail = str(exc)
             raise ThaiProvincesAPIError(str(detail), exc.code) from exc

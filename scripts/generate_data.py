@@ -1,7 +1,6 @@
 """Download and normalize Thailand geography data into the API schema."""
 import json
 import sys
-from collections import defaultdict
 from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
@@ -46,6 +45,7 @@ def required(record: dict[str, object], *keys: str) -> object:
 def normalize(document: object) -> dict[str, list[dict[str, object]]]:
     provinces: dict[int, dict[str, object]] = {}
     districts: dict[int, dict[str, object]] = {}
+    district_provinces: dict[int, int] = {}
     seen_subdistricts: set[int] = set()
     for record in as_records(document):
         province_id = int(required(record, "provinceCode", "province_id", "provinceId"))
@@ -64,7 +64,10 @@ def normalize(document: object) -> dict[str, list[dict[str, object]]]:
         if district_id not in districts:
             district = {"id": district_id, "name_th": str(required(record, "districtNameTh", "district_name_th")), "name_en": str(required(record, "districtNameEn", "district_name_en")), "subdistricts": []}
             districts[district_id] = district
+            district_provinces[district_id] = province_id
             provinces[province_id]["districts"].append(district)
+        elif district_provinces[district_id] != province_id:
+            raise ValueError(f"District ID {district_id} belongs to multiple provinces: {district_provinces[district_id]} and {province_id}")
         subdistrict = {"id": subdistrict_id, "name_th": str(required(record, "subdistrictNameTh", "subdistrict_name_th")), "name_en": str(required(record, "subdistrictNameEn", "subdistrict_name_en")), "zipcode": zipcode}
         districts[district_id]["subdistricts"].append(subdistrict)
     result = {"provinces": sorted(provinces.values(), key=lambda item: item["id"])}

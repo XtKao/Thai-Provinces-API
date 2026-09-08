@@ -1,3 +1,8 @@
+import io
+from urllib.error import HTTPError
+
+import pytest
+
 from thai_provinces.client import ThaiProvincesAPI, ThaiProvincesAPIError
 
 
@@ -31,3 +36,14 @@ def test_client_error_has_status_code(monkeypatch):
         assert exc.status_code == 404
     else:
         raise AssertionError("Expected ThaiProvincesAPIError")
+
+
+def test_client_handles_non_object_error_body(monkeypatch):
+    client = ThaiProvincesAPI()
+    error = HTTPError("https://example.test", 500, "server error", {}, io.BytesIO(b'["server error"]'))
+    monkeypatch.setattr("thai_provinces.client.urlopen", lambda *_args, **_kwargs: (_ for _ in ()).throw(error))
+
+    with pytest.raises(ThaiProvincesAPIError, match="server error") as raised:
+        client.health()
+
+    assert raised.value.status_code == 500
